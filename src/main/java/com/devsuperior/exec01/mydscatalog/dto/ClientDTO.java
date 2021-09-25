@@ -1,11 +1,13 @@
 package com.devsuperior.exec01.mydscatalog.dto;
 
+import java.io.Serializable;
 import java.time.Instant;
 
 import com.devsuperior.exec01.mydscatalog.entities.Client;
 
-public class ClientDTO {
-
+public class ClientDTO implements Serializable {	
+	private static final long serialVersionUID = 1L;
+	
 	private Long id;
 	private String name;
 	private String cpf;
@@ -79,8 +81,5 @@ public class ClientDTO {
 
 	public void setChildren(Integer children) {
 		this.children = children;
-	}
-	
-	
-	
+	}	
 }
