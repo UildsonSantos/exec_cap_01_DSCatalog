@@ -31,4 +31,15 @@ public class ClientService {
 		Client entity = optClient.orElseThrow(() -> new ResourceNotFoundException("Entity not found"));
 		return new ClientDTO(entity);
 	}
+
+	public ClientDTO insert(ClientDTO clientdto) {
+		Client entity = new Client();
+		entity.setName(clientdto.getName());
+		entity.setCpf(clientdto.getCpf());
+		entity.setIncome(clientdto.getIncome());
+		entity.setBirthDate(clientdto.getBirthDate());
+		entity.setChildren(clientdto.getChildren());		
+		entity = clientRepository.save(entity);
+		return new ClientDTO(entity);
+	}
 }
