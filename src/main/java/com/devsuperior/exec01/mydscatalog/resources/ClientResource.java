@@ -8,7 +8,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.devsuperior.exec01.mydscatalog.entities.Client;
+import com.devsuperior.exec01.mydscatalog.dto.ClientDTO;
 import com.devsuperior.exec01.mydscatalog.services.ClientService;
 
 @RestController
@@ -19,8 +19,8 @@ public class ClientResource {
 	private ClientService clientService;
 	
 	@GetMapping
-	public ResponseEntity<List<Client>> findAll(){
-		List<Client> list = clientService.findAll();		
+	public ResponseEntity<List<ClientDTO>> findAll(){
+		List<ClientDTO> list = clientService.findAll();		
 		return ResponseEntity.ok().body(list);		
 	}
 }
