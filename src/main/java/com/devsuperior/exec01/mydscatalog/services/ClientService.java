@@ -1,14 +1,14 @@
 package com.devsuperior.exec01.mydscatalog.services;
 
-import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 import javax.persistence.EntityNotFoundException;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.dao.EmptyResultDataAccessException;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -25,9 +25,9 @@ public class ClientService {
 	private ClientRepository clientRepository;
 	
 	@Transactional(readOnly = true)
-	public List<ClientDTO> findAll() {
-		List<Client> list = clientRepository.findAll();
-		return list.stream().map(elem -> new ClientDTO(elem)).collect(Collectors.toList());
+	public Page<ClientDTO> findAllPaged(PageRequest pageRequest) {
+		Page<Client> pageableList = clientRepository.findAll(pageRequest);
+		return pageableList.map(elem -> new ClientDTO(elem));
 	}
 
 	@Transactional(readOnly = true)
