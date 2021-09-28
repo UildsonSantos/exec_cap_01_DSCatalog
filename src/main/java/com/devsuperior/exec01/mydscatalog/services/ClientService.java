@@ -7,12 +7,15 @@ import java.util.stream.Collectors;
 import javax.persistence.EntityNotFoundException;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.devsuperior.exec01.mydscatalog.dto.ClientDTO;
 import com.devsuperior.exec01.mydscatalog.entities.Client;
 import com.devsuperior.exec01.mydscatalog.repositories.ClientRepository;
+import com.devsuperior.exec01.mydscatalog.services.exceptions.DatabaseException;
 import com.devsuperior.exec01.mydscatalog.services.exceptions.ResourceNotFoundException;
 
 @Service
@@ -35,31 +38,43 @@ public class ClientService {
 	}
 	
 	@Transactional
-	public ClientDTO insert(ClientDTO clientdto) {
+	public ClientDTO insert(ClientDTO clientDTO) {
 		Client entity = new Client();
-		entity.setName(clientdto.getName());
-		entity.setCpf(clientdto.getCpf());
-		entity.setIncome(clientdto.getIncome());
-		entity.setBirthDate(clientdto.getBirthDate());
-		entity.setChildren(clientdto.getChildren());		
+		copyDTOToEntity(clientDTO, entity);			
 		entity = clientRepository.save(entity);
 		return new ClientDTO(entity);
 	}
 	
 	@Transactional
-	public ClientDTO update(Long id, ClientDTO clientdto) {
+	public ClientDTO update(Long id, ClientDTO clientDTO) {
 		try {
 			Client entity = clientRepository.getOne(id);
-			entity.setName(clientdto.getName());
-			entity.setCpf(clientdto.getCpf());
-			entity.setIncome(clientdto.getIncome());
-			entity.setBirthDate(clientdto.getBirthDate());
-			entity.setChildren(clientdto.getChildren());		
+			copyDTOToEntity(clientDTO, entity);
 			entity = clientRepository.save(entity);
 			return new ClientDTO(entity);
 		} 
 		catch (EntityNotFoundException e) {
 			throw new ResourceNotFoundException("Id not found " +id);
 		}		
+	}
+	
+	public void delete(Long id) {
+		try {
+			clientRepository.deleteById(id);
+		} 
+		catch (EmptyResultDataAccessException e) {
+			throw new ResourceNotFoundException("Id not Found " +id);
+		}
+		catch (DataIntegrityViolationException e) {
+			throw new DatabaseException("Integrity violation");
+		}		
+	}
+	
+	private void copyDTOToEntity(ClientDTO clientDTO, Client entity) {
+		entity.setName(clientDTO.getName());
+		entity.setCpf(clientDTO.getCpf());
+		entity.setIncome(clientDTO.getIncome());
+		entity.setBirthDate(clientDTO.getBirthDate());
+		entity.setChildren(clientDTO.getChildren());			
 	}
 }
